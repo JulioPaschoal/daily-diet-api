@@ -2,7 +2,7 @@
   "name": "daily-diet-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "prepare": "husky"
@@ -18,7 +18,6 @@
     }
   },
   "packageManager": "pnpm@12.21.0",
-  "type": "module",
   "dependencies": {
     "fastify": "^5.12.8"
   },
