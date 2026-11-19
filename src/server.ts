@@ -9,4 +9,4 @@ app.get("/hello", async () => {
 
 app
   .listen({ port: env.PORT })
-  .then(() => console.log("🚀 http://localhost:3333"));
+  .then(() => console.log(`🚀 http://localhost:${env.PORT}`));
