@@ -3,8 +3,11 @@ import { env } from "./env";
 
 const app = fastify();
 
+import { knex } from "./database";
+
 app.get("/hello", async () => {
-  return { message: "Olá, Daily Diet! 🥗" };
+  const tables = await knex("sqlite_schema").select("name");
+  return tables;
 });
 
 app
