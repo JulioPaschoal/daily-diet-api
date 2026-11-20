@@ -63,6 +63,45 @@ export async function mealsRoutes(app: FastifyInstance) {
     return { meals: meals.map(formatMeal) };
   });
 
+  // Rota fixa "/metrics": o Fastify sempre prefere uma rota fixa a uma com
+  // parâmetro, então "/meals/metrics" nunca é confundido com "/meals/:id".
+  app.get("/metrics", async (request) => {
+    const user = request.user!;
+
+    const meals = await knex("meals")
+      .where({ user_id: user.id })
+      .orderBy([
+        { column: "date", order: "asc" },
+        { column: "created_at", order: "asc" },
+      ])
+      .select("is_on_diet");
+
+    const totalMeals = meals.length;
+    const totalMealsOnDiet = meals.filter((meal) => meal.is_on_diet).length;
+    const totalMealsOffDiet = totalMeals - totalMealsOnDiet;
+
+    // Percorre as refeições em ordem de data contando a sequência atual.
+    // Quando aparece uma fora da dieta, a sequência volta para zero.
+    let bestOnDietSequence = 0;
+    let currentSequence = 0;
+
+    for (const meal of meals) {
+      if (meal.is_on_diet) {
+        currentSequence += 1;
+        bestOnDietSequence = Math.max(bestOnDietSequence, currentSequence);
+      } else {
+        currentSequence = 0;
+      }
+    }
+
+    return {
+      totalMeals,
+      totalMealsOnDiet,
+      totalMealsOffDiet,
+      bestOnDietSequence,
+    };
+  });
+
   app.get("/:id", async (request, reply) => {
     const { id } = mealParamsSchema.parse(request.params);
     const user = request.user!;
