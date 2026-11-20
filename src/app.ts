@@ -1,8 +1,8 @@
 import cookie from "@fastify/cookie";
 import fastify from "fastify";
-import z, { ZodError } from "zod";
-import { usersRoutes } from "./routes/users";
+import { ZodError, z } from "zod";
 import { mealsRoutes } from "./routes/meals";
+import { usersRoutes } from "./routes/users";
 
 export const app = fastify();
 
